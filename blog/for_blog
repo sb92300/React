@@ -1,1 +1,2 @@
-
+terminal
+npx create-react-app blog
