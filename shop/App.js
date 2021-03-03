@@ -11,6 +11,7 @@ import { Link, Route, Switch } from 'react-router-dom';
 function App() {
 
   let [shoes, setShoes] = useState(Data);
+  //신발 데이터
 
   return (
     <div className="App">
@@ -33,7 +34,7 @@ function App() {
       </Navbar>
 
   <Switch>    
-      <Route path="/">
+      <Route exact path="/">
       {/* exact가 붙으면 정확히 / 만 있을 때만 이걸 보여줌.  */}
           <Jumbotron className="background">
             <h1>20% Season Off</h1>
@@ -57,14 +58,11 @@ function App() {
             </div>
           </div>
       </Route>
-      <Route path="/detail">
-         <Detail />
+      <Route path="/detail/:id">
+         <Detail shoes={shoes} />
       </Route>
       {/* 이렇게 컴포넌트 형식으로 만들어 정리하는 것을 모듈화라고 함. */}
       {/* <Route path="경로" component={컴포넌트 이름}></Route> */}
-      <Route path="/:id">
-          <div>아무거나 적었을 때 이거 보여주세여.</div>
-      </Route>
   </Switch>    
     </div>
   );
