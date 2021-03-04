@@ -1,0 +1,46 @@
+// @import './reset.scss';
+//다른 scss 파일을 만든 뒤 import를 이용해서 불러올 수 있음.
+
+$main-color : #ff0000;
+// $작명 : 필요 style 입력. => #ff0000이 main-color라는 변수가 되었음.
+
+.red {
+    color: $main-color;
+}
+
+@mixin 함수() {
+    background-color: #eeeeee;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 500px;
+    width: 300px;
+    margin: auto;
+}
+// mixin 함수이름() 후 스타일 작성.
+// 작성한 스타일을 원하는 요소 안에 @include 함수이름(); 하면 mixin에 작성한 것을 그대로 쓸 수 있음.
+// 단 mixin은 include한 곳 보다 상위에 있어야 잘 작동 됨.
+.my-alert {
+   @include 함수();
+}
+.my-alert-new {
+    @extend .my-alert;
+    background-color: #ffe591;
+}
+// @extend .my-alert를 이용해 my-alert의 style을 다 받아옴.
+.my-alert p {
+    margin-bottom: 0;
+}
+
+div.container h4 {
+    color: blue;
+}
+// div.container {
+//     h4{
+//         color: blue;
+//     }
+//      p {
+//         color: green;
+//         }
+// }  div.container h4와 같은 뜻 셀렉터 대신 이런 식으로도 사용함. nesting 문법
+
+
