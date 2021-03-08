@@ -10,6 +10,13 @@
 .test {
   color: blue;
 }
-.yas {
-  font-size: 6px;
+.loading {
+  border: 1px solid black;
+  width: 200px;
+  height: 200px;
+  z-index: 10;
+  margin: auto;
+}
+.loading p {
+  margin-top: 45%;
 }

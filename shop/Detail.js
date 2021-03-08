@@ -4,6 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 import styled from 'styled-components';
 import './Detail.scss';
 
+
 let Box = styled.div`
   padding : 20px;
 `;
@@ -16,6 +17,9 @@ let Word = styled.h4`
 // 이런 식으로 props 값만 바꿔서 여러 개의 컬러를 지정할 수 있으나 편의성은 떨어짐.
 function Detail(props) {
 
+  let [time, setTime] = useState(false);
+  let [input, setInput] = useState();
+  // useState를 최상단에 써야 에러 막기 쉬운 듯.
 
     useEffect( ()=>{
       //component가 생성될 떄, component가 update될 때 실행 됨.
@@ -25,12 +29,23 @@ function Detail(props) {
             setTime(true);
           }
       },2000);
+      // timer 같은 기능은 보통 변수로 선언해 필요할 때 쓸 수 있음.
     return function() {
       // return 함수는 Unmount가 될 때 실행 됨.
       // 실행할 코드
+      clearTimeout(timer);
+      /* setTimeout 함수가 계속 남아있으면 어떠한 우연으로 인해
+    버그가 발생할 수도 있어 setTimeout을 사용한 후 바로 없애줘야 함.
+    그래서 setTimeout함수 후 return function(){clearTimeout()}을 이용해
+    setTimeout함수를 없애 줌.*/
     }
-    } );
-    let [time, setTime] = useState(false);
+    }, [/*useEffect함수 안에 대괄호. 특정 state가 변경될 때만
+      useEffect를 사용해달라는 뜻. 여기에 
+      나는 time이라고 썼으므로 time이라는 
+      state가 변경될 때만 사용 됨.
+      공백 []만 쓰면 페이지가 처음
+      로드 될 때 한번만 실행되고 다시는 사용 안됨. */
+       time]);
     let { id } = useParams();
     // { url 파라미터 값 }
     let history = useHistory();

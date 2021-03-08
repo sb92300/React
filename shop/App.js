@@ -6,16 +6,17 @@ import {Navbar, Nav, NavDropdown, Jumbotron, Button } from 'react-bootstrap';
 import Data from './data.js'; 
 import Detail from './Detail.js'
 import { Link, Route, Switch } from 'react-router-dom';
-
+import axios from 'axios';
 
 function App() {
 
   let [shoes, setShoes] = useState(Data);
   //신발 데이터
-
+  let [click, setClick] = useState(0);
+  let [state, setState]= useState(true);
   return (
     <div className="App">
-      <Navbar expand="lg" bg="light" className="yas">
+      <Navbar expand="lg" bg="light">
             <Navbar.Brand href="#home">My Shoes</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
@@ -56,6 +57,42 @@ function App() {
                 })
               }
             </div>
+            {
+              state == false
+              ? <Load></Load>
+              : null
+            }
+            <button className="btn btn-primary" onClick={
+              ()=> {
+
+                setState(false);
+                // onclick 하자마자 로딩 중 이라는 ui 띄움
+
+
+                // axios.post('서버 url', {id : 'abc', pw : 1234} <= 처럼 {}열고 전달할 데이터 입력) 예제 코드 찾으면 header정보 추가, 쿠키 설정 등 가능
+
+                // fetch("서버 url").then() 사용 가능. 하지만 호환성이 안좋아서 library 사용함.
+                axios.get('https://codingapple1.github.io/shop/data2.json')
+                .then(//ajax 요청이 성공했을 때 실행할 코드
+                  (result)=>{
+                    //로딩중 ui 안보이게
+                    setState(true);
+                    // 가져온 값을 쓰고 싶을 땐 함수에 인자를 적어 인자를 사용하면 됨.
+                    console.log(result.data);
+                    setShoes([...shoes, ...result.data]);
+                    //[...shoes, ...result.data] 라고 작성하면 shoes와 result.data를 감싼 []를 없애고 두 배열을 합쳐서 다시 []로 감싸줌. 
+                    setClick(click + 1);
+                    console.log(click);
+                    //click 횟수에 따라 get으로 받아오는 data2 의 숫자 변경, 등으로 기능 개발
+                  })
+                .catch(//ajax 요청이 실패했을 때 실행
+                ()=> {
+                  //로딩중 ui 안보이게
+                  setState(true);
+                  console.log('req fail')}
+                )
+            }
+          }>더보기</button>
           </div>
       </Route>
       <Route path="/detail/:id">
@@ -78,5 +115,12 @@ function Sales(props) {
   )
 } 
 
+function Load() {
+  return (
+    <div className="loading">
+      <p>로딩 중 입니다.</p>
+    </div>
+  )
+}
 
 export default App;
