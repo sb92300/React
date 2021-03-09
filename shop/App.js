@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav, NavDropdown, Jumbotron, Button } from 'react-bootstrap';
@@ -8,12 +8,19 @@ import Detail from './Detail.js'
 import { Link, Route, Switch } from 'react-router-dom';
 import axios from 'axios';
 
+let stuckContext = React.createContext();
+//같은 변수 값을 공유할 범위 생성
+// export stuckContext = React.createContext(); 로 작성하여 Detail.js에서 사용 가능.
 function App() {
 
   let [shoes, setShoes] = useState(Data);
   //신발 데이터
   let [click, setClick] = useState(0);
   let [state, setState]= useState(true);
+  let [stuck, setStuck] = useState([10, 11, 12]);
+
+
+
   return (
     <div className="App">
       <Navbar expand="lg" bg="light">
@@ -48,15 +55,20 @@ function App() {
             </p>
           </Jumbotron>
           <div className="container">
+          <stuckContext.Provider value={stuck}>
+            {/* 최상단에 변수 = React.createContext 작성 후 변수.Provider 태그로 묶으면
+            묶인 태그 안에 있는 태그들은 value={state}로 지정한 state를 props 없이 사용 가능. */}
             <div className="row">
               {
                 shoes.map(function(shoesData, count) {
                   return(
                     <Sales shoes={shoes[count]} count={count} key={count}></Sales>
+                    // props로 보내는 shoes={}의 값은 map함수에서 나온 shoesData가 아니라 useState의 값 shoes 다!
                   );
                 })
               }
             </div>
+          </stuckContext.Provider>
             {
               state == false
               ? <Load></Load>
@@ -96,21 +108,26 @@ function App() {
           </div>
       </Route>
       <Route path="/detail/:id">
-         <Detail shoes={shoes} />
+         <Detail shoes={shoes} stuck={stuck} setStuck={setStuck}/>
       </Route>
       {/* 이렇게 컴포넌트 형식으로 만들어 정리하는 것을 모듈화라고 함. */}
       {/* <Route path="경로" component={컴포넌트 이름}></Route> */}
-  </Switch>    
+  </Switch> 
     </div>
   );
 }
 
 function Sales(props) {
+
+  let stuck = useContext(stuckContext);
+// 최상단 import에 useContext 추가, 사용할 컴포넌트에 작성.
+// let stuckContext = React.createContext(); 이걸로 범위를 생성했으니 ()안에 범위를 넣어줌.
   return (
     <div className="col-md-4">
     <img alt="사진" src={'https://codingapple1.github.io/shop/shoes'+(props.count +1)+'.jpg'} width="100%"/>
     <h4>상품 명 : { props.shoes.title } </h4>
     <p>{ props.shoes.content } & {props.shoes.price}</p>
+    <p>재고 : {stuck[props.count]}개</p>
   </div>
   )
 } 

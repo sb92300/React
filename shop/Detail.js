@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from 'styled-components';
 import './Detail.scss';
-
+// import {stuckContext} from './App.js'; 이렇게 작성하여 App.js에서 export한 stuckContext 사용 가능.
 
 let Box = styled.div`
   padding : 20px;
@@ -19,6 +19,9 @@ function Detail(props) {
 
   let [time, setTime] = useState(false);
   let [input, setInput] = useState();
+  var newStuck = [...props.stuck];
+  newStuck[0] = 9;
+  
   // useState를 최상단에 써야 에러 막기 쉬운 듯.
 
     useEffect( ()=>{
@@ -77,7 +80,11 @@ function Detail(props) {
               <h4 className="pt-5">{props.shoes[product.id].title}</h4>
               <p>{props.shoes[product.id].content}</p>
               <p>{props.shoes[product.id].price}원</p>
-              <button className="btn btn-primary">주문하기</button>
+              <Stuck stuck={props.stuck}></Stuck>
+              {/* 최상위권인 app.js에 있는 stuck이라는 state를
+              <Detail>에 props를 이용하여 전달,
+              전달 받은 것을 다시 Stuck으로 전달. */}
+              <button className="btn btn-primary" onClick={ ()=> { props.setStuck(newStuck) } }>주문하기</button>
               <button className="btn btn-danger" onClick={ ()=> {
                   history.goBack();
                 //   history.push('/') 라고 작성하면 작성한 경로로 이동 가능.
@@ -97,5 +104,10 @@ function Detail(props) {
   //   }
   // } 옛날 리액트 문법
 
+  function Stuck(props) {
+    return (
+      <p>재고 :{props.stuck[0]} </p>
+    )
+  }
 
 export default Detail;
