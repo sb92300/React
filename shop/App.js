@@ -7,6 +7,7 @@ import Data from './data.js';
 import Detail from './Detail.js'
 import { Link, Route, Switch } from 'react-router-dom';
 import axios from 'axios';
+import Cart from './Cart.js';
 
 let stuckContext = React.createContext();
 //같은 변수 값을 공유할 범위 생성
@@ -18,7 +19,7 @@ function App() {
   let [click, setClick] = useState(0);
   let [state, setState]= useState(true);
   let [stuck, setStuck] = useState([10, 11, 12]);
-
+  
 
 
   return (
@@ -112,6 +113,9 @@ function App() {
       </Route>
       {/* 이렇게 컴포넌트 형식으로 만들어 정리하는 것을 모듈화라고 함. */}
       {/* <Route path="경로" component={컴포넌트 이름}></Route> */}
+      <Route path="/cart">
+        <Cart></Cart>
+      </Route>
   </Switch> 
     </div>
   );
