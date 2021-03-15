@@ -3,7 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from 'styled-components';
 import './Detail.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Nav} from 'react-bootstrap';
 // import {stuckContext} from './App.js'; 이렇게 작성하여 App.js에서 export한 stuckContext 사용 가능.
+import { CSSTransition } from "react-transition-group";
+import { connect } from "react-redux";
 
 let Box = styled.div`
   padding : 20px;
@@ -19,6 +23,9 @@ function Detail(props) {
 
   let [time, setTime] = useState(false);
   let [input, setInput] = useState();
+  let [tab, setTab] = useState(0);
+  let [swit, setSwit] = useState(false);
+  //스위치용도의 state 생성
   var newStuck = [...props.stuck];
   newStuck[0] = 9;
   
@@ -74,7 +81,7 @@ function Detail(props) {
         </Box>
         <div className="row">
           <div className="col-md-6">
-              <img src="https://codingapple1.github.io/shop/shoes1.jpg" width="100%" />
+              <img src={'https://codingapple1.github.io/shop/shoes' + (props.shoes[product.id]) + '.jpg'} width="100%" />
           </div>
           <div className="col-md-6 mt-4">
               <h4 className="pt-5">{props.shoes[product.id].title}</h4>
@@ -84,13 +91,28 @@ function Detail(props) {
               {/* 최상위권인 app.js에 있는 stuck이라는 state를
               <Detail>에 props를 이용하여 전달,
               전달 받은 것을 다시 Stuck으로 전달. */}
-              <button className="btn btn-primary" onClick={ ()=> { props.setStuck(newStuck) } }>주문하기</button>
+              <button className="btn btn-primary" onClick={ ()=> { props.setStuck(newStuck); props.dispatch( {type : 'addProduct', payload : { id : props.shoes[product.id].id , name : props.shoes[product.id].title , quantity : 1 } }); history.push('/Cart') } }>주문하기</button>
+              {/* history.push() 훅을 이용해 새로고침 없이 페이지 이동을 시켜 변경된 값을 유지하게 한다. */}
               <button className="btn btn-danger" onClick={ ()=> {
                   history.goBack();
                 //   history.push('/') 라고 작성하면 작성한 경로로 이동 가능.
               } }>뒤로가기</button> 
           </div>
         </div>
+        <Nav className="mt-5" variant="tabs" defaultActiveKey="link-0">
+  <Nav.Item>
+    <Nav.Link eventKey="link-0" onClick={ ()=>{ setSwit(false); setTab(0) } }>Active</Nav.Link>
+                                            {/* 버튼을 누를 때 마다 스위치를 꺼서 다음 버튼에 스위치가 다시 on 될 수 있게 하기 위해 false로 변경하는 값을 넣는다. */}
+  </Nav.Item>
+  <Nav.Item>
+    <Nav.Link eventKey="link-1" onClick={ ()=>{ setSwit(false); setTab(1) } }>Option 2</Nav.Link>
+  </Nav.Item>
+</Nav>
+  <CSSTransition in={swit} classNames="wow" timeout={500}>
+  {/* react-transition-group 라이브러리 다운, import, 후 애니메이션을 적용할 컴포넌트를 감싸줌
+   in={true / false}로 스위치 역할을 함(state로 만들었음.) timeout={적용되는 시간}*/}
+   <TabContent tab={tab} setSwit={setSwit}></TabContent>
+   </CSSTransition>
       </div> 
     )
   }
@@ -110,4 +132,35 @@ function Detail(props) {
     )
   }
 
-export default Detail;
+  function TabContent(props) {
+
+    useEffect( ()=> { 
+      props.setSwit(true);
+      //페이지가 켜질 때 업데이트 될 떄 true로 만들게 함.
+    });
+
+    if(props.tab == 0 ) {
+      return <div>0번째 내용입니다.</div>
+    } else if(props.tab == 1) {
+      return <div>1번째 내용입니다.</div>
+    } else if(props.tab == 2) {
+      return <div>2번째 내용입니다.</div>
+    }
+  }
+  
+
+  function ForRedux(state) {
+    // state를 props화하는 함수. index.js에서 Provider에게 준 state 값을 여기서 가공
+      console.log(state);
+      //reducer2를 같이 받아옴. 그러므로 state에는 2가지 값이 들어가 있음.(신발 정보와 true라고 만든 let alert의 값)
+      return {
+        store : state.reducer,
+        alert : state.reducer2
+        //index.js 에서 넘어온 state를 여기서 store라고 사용하겠다는 뜻.
+        //reducer, reducer2를 받아왔으므로 2가지 값의 이름을 지정해 사용한다.
+     }
+    }
+    
+    export default connect(ForRedux)(Detail);
+    // export default connect(함수명)(함수명); import 설치 유의
+    // export default Cart;

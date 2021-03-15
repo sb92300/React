@@ -20,11 +20,13 @@ function Cart(props) {
     {
         props.store.map((a, i)=> {
             return (
-            <tr>
-            <td>{i}</td>
-            <td>{ props.store[i].name }</td>
-            <td>{ props.store[i].quantity }</td>
-            <td><button onClick={ ()=> { props.dispatch({ type : 'plus' }) }}>+</button> <button onClick={()=> { props.dispatch({ type : 'minus'}) }}>-</button></td>
+            <tr key={i}>
+            <td>{a.id}</td>
+            <td>{ a.name }</td>
+            <td>{ a.quantity }</td>
+            <td><button onClick={ ()=> { props.dispatch({ type : 'plus', data : a.id }) }}>+</button>
+                <button onClick={()=> { props.dispatch({ type : 'minus', data : a.id }) }}>-</button>
+            </td>
             {/* porps.dispatch({}) 이 문법을 이용해서 type을 정의 */}
           </tr>
           )
@@ -36,7 +38,8 @@ function Cart(props) {
   //index.js에서 reduce로 넘어온 값이므로 props가 붙어야 함. 또한 이 삼항연산자를 포함한 함수에 props 인자가 있는지 확인.
      ? ( <div className="my-alert-new">
         <p>지금 구매하시면 20%할인 합니다.</p>
-        <button onClick={ ()=> { props.dispatch({ type : "close" }) } }>닫기</button>
+        <button onClick={ ()=> { props.dispatch({ type : "close", payload : { name : 'kim' } }) } }>닫기</button>
+        {/* payload : {} 를 이용해서 데이터를 보낼 수 있음. */}
     </div> )
     : null
   }

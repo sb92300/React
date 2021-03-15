@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav, NavDropdown, Jumbotron, Button } from 'react-bootstrap';
 import Data from './data.js'; 
 import Detail from './Detail.js'
-import { Link, Route, Switch } from 'react-router-dom';
+import { Link, Route, Switch, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import Cart from './Cart.js';
 
@@ -123,12 +123,13 @@ function App() {
 
 function Sales(props) {
 
+  let history = useHistory();
   let stuck = useContext(stuckContext);
 // 최상단 import에 useContext 추가, 사용할 컴포넌트에 작성.
 // let stuckContext = React.createContext(); 이걸로 범위를 생성했으니 ()안에 범위를 넣어줌.
   return (
-    <div className="col-md-4">
-    <img alt="사진" src={'https://codingapple1.github.io/shop/shoes'+(props.count +1)+'.jpg'} width="100%"/>
+    <div className="col-md-4" onClick={ ()=> { history.push('/detail/'+props.shoes.id) } }> 
+    <img alt="사진" src={ 'https://codingapple1.github.io/shop/shoes' + (props.count +1 )+ '.jpg' } width="100%"/>
     <h4>상품 명 : { props.shoes.title } </h4>
     <p>{ props.shoes.content } & {props.shoes.price}</p>
     <p>재고 : {stuck[props.count]}개</p>
