@@ -1,10 +1,13 @@
 /*eslint-disable*/
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, lazy, Suspense} from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav, NavDropdown, Jumbotron, Button } from 'react-bootstrap';
 import Data from './data.js'; 
-import Detail from './Detail.js'
+// import Detail from './Detail.js';
+let Detail = lazy(()=>{ return import ('./Detail.js') });
+// Detail.js가 필요할 때 로딩함. App.js가 로딩 될 때 모든 import를 한번에 하면 부담이 됨. 그러므로 현재에는 필요 없는 것은 import 하지 않고 필요할 때 import를 하겠다는 뜻.
+//lazy 처리 해준 요소를 Suspense로 감싸고 Suspense에 fallback={로딩 중}을 작성하여 로딩 될 때 까지 화면을 대기 시킨다.
 import { Link, Route, Switch, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import Cart from './Cart.js';
@@ -109,7 +112,9 @@ function App() {
           </div>
       </Route>
       <Route path="/detail/:id">
+        <Suspense fallback={<div>로딩 중 입니다.</div>}>
          <Detail shoes={shoes} stuck={stuck} setStuck={setStuck}/>
+        </Suspense>
       </Route>
       {/* 이렇게 컴포넌트 형식으로 만들어 정리하는 것을 모듈화라고 함. */}
       {/* <Route path="경로" component={컴포넌트 이름}></Route> */}

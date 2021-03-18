@@ -5,6 +5,11 @@ import { connect } from 'react-redux';
 
 function Cart(props) {
     //redux를 사용해도 값을 상단에서 하단으로 보내는 것이니 props는 써야한다.
+   
+    function close() {
+      props.dispatch({ type : "close", payload : { name : 'kim' } })
+    };
+
     return (
         <div>
   <Table responsive="sm">
@@ -18,14 +23,22 @@ function Cart(props) {
     </thead>
     <tbody>
     {
-        props.store.map((a, i)=> {
+        props.store.map((a, i)=> {  
+
+          function productPlus() {
+            props.dispatch({ type : 'plus', data : a.id })
+          }
+          function productMinus() {
+            props.dispatch({ type : 'minus', data : a.id })
+          }
+
             return (
             <tr key={i}>
             <td>{a.id}</td>
             <td>{ a.name }</td>
             <td>{ a.quantity }</td>
-            <td><button onClick={ ()=> { props.dispatch({ type : 'plus', data : a.id }) }}>+</button>
-                <button onClick={()=> { props.dispatch({ type : 'minus', data : a.id }) }}>-</button>
+            <td><button onClick={ productPlus }>+</button>
+                <button onClick={ productMinus }>-</button>
             </td>
             {/* porps.dispatch({}) 이 문법을 이용해서 type을 정의 */}
           </tr>
@@ -38,7 +51,7 @@ function Cart(props) {
   //index.js에서 reduce로 넘어온 값이므로 props가 붙어야 함. 또한 이 삼항연산자를 포함한 함수에 props 인자가 있는지 확인.
      ? ( <div className="my-alert-new">
         <p>지금 구매하시면 20%할인 합니다.</p>
-        <button onClick={ ()=> { props.dispatch({ type : "close", payload : { name : 'kim' } }) } }>닫기</button>
+        <button onClick={ close }>닫기</button>
         {/* payload : {} 를 이용해서 데이터를 보낼 수 있음. */}
     </div> )
     : null
