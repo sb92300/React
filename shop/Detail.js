@@ -19,6 +19,14 @@ let Word = styled.h4`
   color : ${ props => props.color2 } 
 `;
 // 이런 식으로 props 값만 바꿔서 여러 개의 컬러를 지정할 수 있으나 편의성은 떨어짐.
+
+const Hello = styled.div `
+ height: 10px;
+ width: 10px;
+ background : black;
+ border-radius : 50%;
+ margin: auto;
+`
 function Detail(props) {
 
   let [time, setTime] = useState(false);
